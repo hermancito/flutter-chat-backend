@@ -46,14 +46,14 @@ const login = async (req, res = response)=>{
     const {email, password}=req.body;
 
     try{
-        const usuarioDB = await Usuario.findOne({email});
-        if(!usuarioDB){
+        const usuario = await Usuario.findOne({email});
+        if(!usuario){
             return res.status(404).json({
                 ok: false,
                 msg: 'E-mail no encontrado'
             });
         }
-        const validPassword = bcrypt.compareSync(password, usuarioDB.password);
+        const validPassword = bcrypt.compareSync(password, usuario.password);
         if(!validPassword){
             return res.status(404).json({
                 ok: false,
@@ -61,10 +61,10 @@ const login = async (req, res = response)=>{
             });
         }
         //Generar mi JWT
-        const token = await generarJWT(usuarioDB.id);
+        const token = await generarJWT(usuario.id);
         res.json({
             ok: true,
-            usuarioDB,
+            usuario,
             token
         });
 
